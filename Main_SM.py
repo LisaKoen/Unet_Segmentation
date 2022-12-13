@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
     megaDataset = ConcatDataset(megaDataset_list)
 
-    train_dataset, valid_dataset = trainTestSplit(megaDataset, 0.98)
+    train_dataset, valid_dataset = trainTestSplit(megaDataset, 0.90)
 
 
     train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=4)
