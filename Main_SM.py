@@ -56,31 +56,44 @@ if __name__ == '__main__':
     # Datapaths (combines Coco datasets made from Label-Studio)
 
 
-    path_to_images_A = r"C:\Users\lisak\NG\segmentation\finger_marker\data"
-    path_to_annotations_A = r"C:\Users\lisak\NG\segmentation\finger_marker\labels\labels.json"
+    path_to_images_A = r"C:\Users\lisak\NG\segmentation\arm\data"
+    path_to_annotations_A = r"C:\Users\lisak\NG\segmentation\arm\labels\labels.json"
 
-    path_to_images_B = r"C:\Users\lisak\NG\segmentation\finger_marker\data_edge"
-    path_to_annotations_B = r"C:\Users\lisak\NG\segmentation\finger_marker\data_edge_labels\labels.json"
+    # path_to_images_B = r"C:\Users\lisak\NG\segmentation\finger_marker\data_edge"
+    # path_to_annotations_B = r"C:\Users\lisak\NG\segmentation\finger_marker\data_edge_labels\labels.json"
+    #
+    # path_to_images_C = r"C:\Users\lisak\NG\segmentation\finger\data"
+    # path_to_annotations_C = r"C:\Users\lisak\NG\segmentation\finger\labels\labels.json"
+    #
+    # path_to_images_D = r"C:\Users\lisak\NG\segmentation\finger\data_edge"
+    # path_to_annotations_D = r"C:\Users\lisak\NG\segmentation\finger\data_edge_labels\labels.json"
 
-    path_to_images_C = r"C:\Users\lisak\NG\segmentation\finger\data"
-    path_to_annotations_C = r"C:\Users\lisak\NG\segmentation\finger\labels\labels.json"
+    image_path_list = [path_to_images_A]   #, path_to_images_B, path_to_images_C, path_to_images_D]
 
-    path_to_images_D = r"C:\Users\lisak\NG\segmentation\finger\data_edge"
-    path_to_annotations_D = r"C:\Users\lisak\NG\segmentation\finger\data_edge_labels\labels.json"
-
-    image_path_list = [path_to_images_A, path_to_images_B, path_to_images_C, path_to_images_D]
-
-    annotations_list = [path_to_annotations_A, path_to_annotations_B, path_to_annotations_C, path_to_annotations_D]
+    annotations_list = [path_to_annotations_A]   #, path_to_annotations_B, path_to_annotations_C, path_to_annotations_D]
 
     megaDataset_list = []
 
+    greyscale = False
 
     # Datasets (creates augmentations and combines all into one dataset, x6 of original size)
     for path_to_images, path_to_annotations in zip(image_path_list, annotations_list):
-        dataset = ds.Dataset_SM(path_to_images, path_to_annotations, classes=CLASSES,
-                            preprocessing=ds.get_preprocessing(preprocessing_fn))
-        dataset_flip = ds.Dataset_SM(path_to_images, path_to_annotations, classes=CLASSES,
-                                preprocessing=ds.get_preprocessing(preprocessing_fn), flip=ds.get_flip())
+
+        dataset = ds.Dataset_SM(
+            path_to_images,
+            path_to_annotations,
+            classes=CLASSES,
+            preprocessing=ds.get_preprocessing(preprocessing_fn),
+            greyscale=False
+        )
+        dataset_flip = ds.Dataset_SM(
+            path_to_images,
+            path_to_annotations,
+            classes=CLASSES,
+            preprocessing=ds.get_preprocessing(preprocessing_fn),
+            flip=ds.get_flip(),
+            greyscale=False
+        )
 
 
         augmented_dataset = ds.Dataset_SM(
@@ -88,7 +101,8 @@ if __name__ == '__main__':
             path_to_annotations,
             augmentation=ds.get_training_augmentation(),
             classes=CLASSES,
-            preprocessing=ds.get_preprocessing(preprocessing_fn)
+            preprocessing=ds.get_preprocessing(preprocessing_fn),
+            greyscale=False
         )
         augmented_dataset_flip = ds.Dataset_SM(
             path_to_images,
@@ -96,14 +110,16 @@ if __name__ == '__main__':
             augmentation=ds.get_training_augmentation(),
             classes=CLASSES,
             preprocessing=ds.get_preprocessing(preprocessing_fn),
-            flip=ds.get_flip()
+            flip=ds.get_flip(),
+            greyscale=False
         )
         augmented_dataset_b = ds.Dataset_SM(
             path_to_images,
             path_to_annotations,
             augmentation=ds.get_training_augmentation(),
             classes=CLASSES,
-            preprocessing=ds.get_preprocessing(preprocessing_fn)
+            preprocessing=ds.get_preprocessing(preprocessing_fn),
+            greyscale=False
         )
         augmented_dataset_flip_b = ds.Dataset_SM(
             path_to_images,
@@ -111,7 +127,8 @@ if __name__ == '__main__':
             augmentation=ds.get_training_augmentation(),
             classes=CLASSES,
             preprocessing=ds.get_preprocessing(preprocessing_fn),
-            flip=ds.get_flip()
+            flip=ds.get_flip(),
+            greyscale=False
         )
 
         megaDataset = ConcatDataset([dataset, dataset_flip, augmented_dataset, augmented_dataset_b,
@@ -127,7 +144,7 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=4)
     valid_loader = DataLoader(valid_dataset, batch_size=1, shuffle=False, num_workers=2)
 
-    path_to_checkpoints = r"C:\Users\lisak\NG\segmentation\finger+finger_marker\checkpoints_debug"
+    path_to_checkpoints = r"C:\Users\lisak\NG\segmentation\arm\checkpoints"
     # create epoch runners
     # it is a simple loop of iterating over dataloader`s samples
 
